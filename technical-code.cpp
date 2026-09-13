@@ -4,6 +4,7 @@
 #include <chrono>
 #include <cstdlib>
 #include <ctime>
+#include <tuple>
 
 void print_slow(std::string text, int enter, int delay) { // функция для медленного вывода текста
     for (char c : text) {
@@ -53,7 +54,32 @@ bool check_number(std::string number) {// функция для проверки
     }
     return true;
 }
-*/
+
+std::tuple<int,int> check_bulls_and_cows(std::string secret_number, std::string player_number){
+    int bulls {0};
+    int cows {0};
+    
+    // Проверка быков
+    for (int i {0}; i<4; ++i){
+        if(secret_number[i] == player_number[i]){
+            ++bulls;
+            player_number[i] ='B';
+        }
+    }
+
+    // Проверяем коров
+    for(int i {0}; i<4; ++i){
+        if (player_number[i] == 'B'){
+            continue;
+        }
+        if (secret_number.find(player_number[i]) != std::string::npos){
+            ++cows;
+        }
+    }
+    return {bulls, cows};
+
+
+}
 
 // классы для читаемости вывода из функции menu()
 enum class MenuResult {
@@ -64,11 +90,11 @@ enum class MenuResult {
 
 
 
-// функция мейн меню игры 
+// функция main меню игры 
 MenuResult menu() { 
 
 
-    // начанльное меню 
+    // начальное меню 
     std::string choice;
     std::cout << "1. Начать игру" << std::endl 
         << "2. Инструкция" << std::endl 
@@ -82,9 +108,9 @@ MenuResult menu() {
     // действия которые возможны 
     if (choice == "1") { 
         std::cout << std::endl; 
-        printSlow("Начинаем игру...", 2, 30);
+        print_slow("Начинаем игру...", 2, 30);
 
-        return MenuResult::Play; // начнинаем игру 
+        return MenuResult::Play; // начинаем игру 
     } 
     else if (choice == "2") { 
         std::cout << std::endl; 
@@ -121,23 +147,44 @@ MenuResult menu() {
 }
 
 
-void startGame() {
+void start_game_1() {
     // Здесь логика игры
-    std::string computer_output_numbrer {generate_number()};
-    print_slow("Введите число:", 2, 3);
+    std::string computer_output_number {generate_number()};
     std::string user_input_number;
-    while (computer_output_numbrer != user_input_number) {
+
+    while (computer_output_number != user_input_number) {
+        print_slow("Введите число:", 2, 3);
         std::cin >> user_input_number;
+        
         while (check_number(user_input_number) == false){
             print_slow("Неверный ввод. Пожалуйста, введите 4-значное число с уникальными цифрами:", 2, 3);
             std::cin.clear();
             std::cin.ignore(1000, '\n');
             std::cin >> user_input_number;
         }
+
+        int bulls;
+        int cows;
+        std::tie(bulls, cows) = check_bulls_and_cows(computer_output_number, user_input_number);
+
+        std::cout << std::endl;
+        print_slow("Быков: ", 0, 10);
+        std::cout << bulls << std::endl;;
+        print_slow("Коров: ", 0, 10);
+        std::cout << cows << std::endl;
         
+        if (bulls == 4){
+            print_slow("Поздравляю!", 1, 5);
+            print_slow("Ты победил!", 1, 5);
+            print_slow("Отличная работа! Ты угадал загаданное число!", 3, 5);
+        }
+
+
     }
 
 }
+
+
 
 
 
@@ -158,7 +205,7 @@ int main() {
         switch(menu()) {
 
             case MenuResult::Play:
-                //PlayGame
+                start_game_1();
                 continue; // после игры отправляет в меню снова чтобы начать новую или выйти из игры
             
             case MenuResult::Exit:
