@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <tuple>
+#include <vector>
 
 void print_slow(std::string text, int enter, int delay) { // функция для медленного вывода текста
     for (char c : text) {
@@ -31,6 +32,27 @@ std::string generate_number() { // функция для генерации сл
     return number;
 }
 
+
+std::vector<std::string> generate_all_combinations(){
+    std::vector<std::string> combinations;
+
+    for (int i = 1023; i <= 9876; ++i) {
+        std::string number = std::to_string(i);
+
+        if (number.length() == 4 &&
+            number[0] != number[1] &&
+            number[0] != number[2] &&
+            number[0] != number[3] &&
+            number[1] != number[2] &&
+            number[1] != number[3] &&
+            number[2] != number[3]) {
+
+            combinations.push_back(number);
+        }
+    }
+
+    return combinations;
+}
 
 bool check_number(std::string number) {// функция для проверки числа удовлетворяет ли оно условию игры
     if (number.length() != 4) {
@@ -80,6 +102,27 @@ std::tuple<int,int> check_bulls_and_cows(std::string secret_number, std::string 
 
 
 }
+
+
+std::vector<std::string> filter_combinations(std::vector<std::string> combinations,
+        std::string computer_input_number, int bulls, int cows){ //выборка коров и быков
+        std::vector<std::string> result;
+
+        for (std::string number : combinations) {
+
+            std::tuple<int, int> current_result =
+                check_bulls_and_cows(computer_input_number, number);
+
+        int current_bulls = std::get<0>(current_result);
+        int current_cows = std::get<1>(current_result);
+
+        if (current_bulls == bulls && current_cows == cows) {
+            result.push_back(number);
+        }
+    }
+
+    return result;
+}    
 
 // классы для читаемости вывода из функции menu()
 enum class MenuResult {
@@ -235,7 +278,56 @@ void start_game_1() {
 
 void start_game_2(){
     // Здесь логика игры_2
-    
+    std::vector<std::string> combinations {generate_all_combinations()};
+    std::string computer_input_number = combinations[rand() % combinations.size()];
+    std::string user_output_number;
+    print_slow("Загадай 4-значное число с уникальными цифрами: ", 1, 5);
+    bool flag {true};
+    while (flag) {
+
+        print_slow("Загадал число?(да/нет)     ",0,5);
+        std::string answer;
+        std::cin >> answer;
+
+        if (answer == "да"){
+            flag = false;
+        }
+
+        else{
+            print_slow("Жду..........", 1, 30);   
+        }   
+    }
+     while (true){
+        print_slow("Твое число: ", 0, 5);
+        std::cout << computer_input_number << std::endl;
+        int bulls;
+        int cows;
+        print_slow("Быков: ", 0, 5);
+        std::cin >> bulls;
+        print_slow("Коров: ", 0, 5);
+        std::cin >> cows;
+
+        if (bulls == 4){
+            print_slow("Твое число: ", 0, 5);
+            std::cout << computer_input_number << std::endl;
+            print_slow("Спасибо за игру!",2,10);
+            break;
+        }
+
+        else{
+            combinations = filter_combinations(combinations, computer_input_number, bulls,cows);
+            if (combinations.empty()){
+                print_slow("Ты где то ошибся!!!",2,10);
+                print_slow("Начни игру заново...",2,10);
+                break;
+            }
+
+            else{
+                computer_input_number = combinations[rand() % combinations.size()];    
+            }
+        }
+     }
+
 }
 
 
