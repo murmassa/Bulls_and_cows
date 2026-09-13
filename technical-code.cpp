@@ -148,14 +148,14 @@ MenuResult menu() {
 
 
 void start_game_1() {
-    // Здесь логика игры
+    // Здесь логика игры_1
     std::string computer_output_number {generate_number()};
     std::string user_input_number;
 
     while (computer_output_number != user_input_number) {
         print_slow("Введите число:", 2, 3);
         std::cin >> user_input_number;
-        
+
         while (check_number(user_input_number) == false){
             print_slow("Неверный ввод. Пожалуйста, введите 4-значное число с уникальными цифрами:", 2, 3);
             std::cin.clear();
@@ -184,7 +184,10 @@ void start_game_1() {
 
 }
 
-
+void start_game_2(){
+    // Здесь логика игры_2
+    
+}
 
 
 
