@@ -1,12 +1,11 @@
 #include <iostream>
-#include <random>
-#include <vector>
 #include <string>
 #include <thread>
 #include <chrono>
+#include <cstdlib>
+#include <ctime>
 
-
-void printSlow(std::string text, int enter, int delay) { // функция для медленного вывода текста
+void print_slow(std::string text, int enter, int delay) { // функция для медленного вывода текста
     for (char c : text) {
         std::cout << c << std::flush;
         std::this_thread::sleep_for(std::chrono::milliseconds(delay));
@@ -15,30 +14,45 @@ void printSlow(std::string text, int enter, int delay) { // функция дл�
         std::cout << std::endl;
     }
 }
-/*
-std::vector generateAllCombinations() {  
-    std::vector combinations;
 
-    for (int i = 1023; i <= 9876; ++i) {
-        std::string s = std::to_string(i);
+std::string generate_number() { // функция для генерации случайного числа
+    std::string number;
+    while (number.length() < 4){
+        char digit = rand() % 10;
 
-        // Проверка уникальности всех 4 цифр
-        if (s[0] != s[1] && s[0] != s[2] && s[0] != s[3] &&
-            s[1] != s[2] && s[1] != s[3] && s[2] != s[3]) {
-            combinations.push_back(s);
+        if (number.empty() && digit == 0){
+            continue; // пропускаем ведущий ноль
+        }
+        if (number.find('0' +digit) == std::string::npos){
+            number += '0' + digit;
         }
     }
-    return combinations;
+    return number;
 }
-int random4() //генератор случайных 4 значных чисел
-{
-    std::random_device rd;
-    std::mt19937 gen(rd());//это алгоритм «Вихрь Мерсенна»
-    std::uniform_int_distribution<int> dist(1000, 9999);
-    int random_num = dist(gen);
-    return random_num;
+
+
+bool check_number(std::string number) {// функция для проверки числа удовлетворяет ли оно условию игры
+    if (number.length() != 4) {
+        return false;
+    }
+
+    if (number[0] == '0'){
+        return false;
+    }
+
+    for (char c : number){
+        if (!isdigit(c)){
+            return false;
+        }
+
+    }
+    if (number[0] == number[1] || number[0] == number[2] || number[0] == number[3] ||
+        number[1] == number[2] || number[1] == number[3] ||
+        number[2] == number[3]) {
+        return false;
+    }
+    return true;
 }
-*/
 void menu() {
 
     std::string choice;
@@ -52,32 +66,32 @@ void menu() {
  
     if (choice == "1") { 
         std::cout << std::endl; 
-        printSlow("Начинаем игру...", 2, 30);
+        print_slow("Начинаем игру...", 2, 30);
     } 
     else if (choice == "2") { 
         std::cout << std::endl; 
-        printSlow("ИНСТРУКЦИЯ:", 1, 5);
-        printSlow("В этой игре вам нужно угадать загаданное число.", 1, 5); 
-        printSlow("Вы должны вводить 4-значные числа с уникальными цифрами.", 1, 5); 
-        printSlow("После каждой попытки вы получите подсказку в виде количества быков и коров.", 1, 5); 
-        printSlow("Бык — правильная цифра стоит на правильном месте.", 1, 5); 
-        printSlow("Корова — правильная цифра есть, но стоит не на своём месте.", 1, 5); 
-        printSlow("Но также компьютер будет угадывать ваше число, и вы должны будете давать ему подсказки.", 1, 5); 
-        printSlow("Удачи!", 2, 30); 
+        print_slow("ИНСТРУКЦИЯ:", 1, 5);
+        print_slow("В этой игре вам нужно угадать загаданное число.", 1, 5); 
+        print_slow("Вы должны вводить 4-значные числа с уникальными цифрами.", 1, 5); 
+        print_slow("После каждой попытки вы получите подсказку в виде количества быков и коров.", 1, 5); 
+        print_slow("Бык — правильная цифра стоит на правильном месте.", 1, 5); 
+        print_slow("Корова — правильная цифра есть, но стоит не на своём месте.", 1, 5); 
+        print_slow("Но также компьютер будет угадывать ваше число, и вы должны будете давать ему подсказки.", 1, 5); 
+        print_slow("Удачи!", 2, 30); 
 
         menu(); // возвращаемся в меню
     } 
     
     else if (choice == "3") {
         std::cout << std::endl ;
-            printSlow("Выход из игры...", 2, 30);
-            printSlow("До свидания!", 2, 30);
+            print_slow("Выход из игры...", 2, 30);
+            print_slow("До свидания!", 2, 30);
 
     } 
     else { 
         std::cout << std::endl;
-        printSlow("Неверный выбор.", 1, 30);
-        printSlow("Пожалуйста, выберите 1, 2 или 3.", 2, 30);
+        print_slow("Неверный выбор.", 1, 30);
+        print_slow("Пожалуйста, выберите 1, 2 или 3.", 2, 30);
         std::cin.clear();
         std::cin.ignore(1000, '\n');
         menu(); // возвращаемся в меню
@@ -85,16 +99,36 @@ void menu() {
 }
 
 
+void startGame() {
+    // Здесь логика игры
+    std::string computer_output_numbrer {generate_number()};
+    print_slow("Введите число:", 2, 3);
+    std::string user_input_number;
+    while (computer_output_numbrer != user_input_number) {
+        std::cin >> user_input_number;
+        while (check_number(user_input_number) == false){
+            print_slow("Неверный ввод. Пожалуйста, введите 4-значное число с уникальными цифрами:", 2, 3);
+            std::cin.clear();
+            std::cin.ignore(1000, '\n');
+            std::cin >> user_input_number;
+        }
+        
+    }
+
+}
+
+
 
 int main() {
-    printSlow("Загрузка игры...", 2, 30);
+    srand(time(0));
+    print_slow("Загрузка игры...", 2, 30);
 
     std::cout << "========================================" << std::endl;
-    printSlow("          Игра 'Быки и Коровы'          ", 1, 30);
+    print_slow("          Игра 'Быки и Коровы'          ", 1, 30);
     std::cout << "========================================" << std::endl
         << std::endl;
 
-    printSlow("Добро пожаловать в игру!", 2, 30);
+    print_slow("Добро пожаловать в игру!", 2, 30);
 
     menu(); // вызов функции меню
 
