@@ -85,7 +85,9 @@ std::tuple<int,int> check_bulls_and_cows(std::string secret_number, std::string 
 enum class MenuResult {
     Exit  = 0,
     Again = 1,
-    Play  = 2
+    Play  = 2,
+    Game1 = 3,
+    Game2 = 4
 };
 
 
@@ -139,6 +141,53 @@ MenuResult menu() {
         std::cout << std::endl;
         print_slow("Неверный выбор.", 1, 30);
         print_slow("Пожалуйста, выберите 1, 2 или 3.", 2, 30);
+        std::cin.clear();
+        std::cin.ignore(1000, '\n');
+
+        return MenuResult::Again; // возвращаемся в меню
+    } 
+}
+
+MenuResult menu2() { 
+
+
+    // начальное меню 
+    std::string choice;
+    std::cout << "1. Player Guess" << std::endl 
+        << "2. Computer Guess" << std::endl 
+        << "3. Exit" << std::endl
+        << std::endl; 
+ 
+    std::cout << "Выберите действие: "; 
+    std::cin >> choice;
+ 
+
+    // действия которые возможны 
+    if (choice == "1") { 
+        std::cout << std::endl; 
+        print_slow("Начинаем игру против компьютера...", 2, 30);
+
+        return MenuResult::Game1; // начинаем игру 
+    } 
+    else if (choice == "2") { 
+        std::cout << std::endl; 
+        print_slow("Начинаем игру против компьютера...", 2, 30);
+
+        return MenuResult::Game2; // начинаем игру 
+    }
+    else if (choice == "3") {
+        std::cout << std::endl ;
+            print_slow("Выход в главное меню...", 2, 30);
+
+        return MenuResult::Exit; // конец игры, завершение 
+
+    } 
+
+    // если в cin пошло не то 
+    else { 
+        std::cout << std::endl;
+        print_slow("Неверный выбор.", 1, 30);
+        print_slow("Пожалуйста, выберите 1 или 2", 2, 30);
         std::cin.clear();
         std::cin.ignore(1000, '\n');
 
@@ -208,17 +257,27 @@ int main() {
         switch(menu()) {
 
             case MenuResult::Play:
-                start_game_1();
-                continue; // после игры отправляет в меню снова чтобы начать новую или выйти из игры
-            
-            case MenuResult::Exit:
-                return 0; // завершение программы полностью 
-            
-            case MenuResult::Again:
-                continue; // повторение при вызове меню снова, например при ошибке 
-            
-            default:
-                return 0; 
+                while (true) {
+                    switch (menu2()) {
+
+                        case MenuResult::Game1: 
+                            start_game_1();
+                            break; 
+                        case MenuResult::Game2:
+                            //start_game_2();
+                            break;
+
+                        case MenuResult::Again: continue;
+                        case MenuResult::Exit: break;
+                        default: break; 
+                    }
+                }
+                continue;
+
+                // после игры отправляет в меню снова чтобы начать новую или выйти из игры
+            case MenuResult::Exit: return 0; // завершение программы полностью 
+            case MenuResult::Again: continue; // повторение при вызове меню снова, например при ошибке 
+            default: return 0; 
         }
     }
 }
