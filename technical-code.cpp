@@ -39,8 +39,21 @@ int random4() //генератор случайных 4 значных чисе�
     return random_num;
 }
 */
-void menu() {
 
+// классы для читаемости вывода из функции menu()
+enum class MenuResult {
+    Exit  = 0,
+    Again = 1,
+    Play  = 2
+};
+
+
+
+// функция мейн меню игры 
+MenuResult menu() { 
+
+
+    // начанльное меню 
     std::string choice;
     std::cout << "1. Начать игру" << std::endl 
         << "2. Инструкция" << std::endl 
@@ -50,9 +63,13 @@ void menu() {
     std::cout << "Выберите действие: "; 
     std::cin >> choice;
  
+
+    // действия которые возможны 
     if (choice == "1") { 
         std::cout << std::endl; 
         printSlow("Начинаем игру...", 2, 30);
+
+        return MenuResult::Play; // начнинаем игру 
     } 
     else if (choice == "2") { 
         std::cout << std::endl; 
@@ -65,22 +82,26 @@ void menu() {
         printSlow("Но также компьютер будет угадывать ваше число, и вы должны будете давать ему подсказки.", 1, 5); 
         printSlow("Удачи!", 2, 30); 
 
-        menu(); // возвращаемся в меню
+        return MenuResult::Again; // возвращаемся в меню
     } 
-    
     else if (choice == "3") {
         std::cout << std::endl ;
             printSlow("Выход из игры...", 2, 30);
             printSlow("До свидания!", 2, 30);
 
+        return MenuResult::Exit; // конец игры, завершение 
+
     } 
+
+    // если в cin пошло не то 
     else { 
         std::cout << std::endl;
         printSlow("Неверный выбор.", 1, 30);
         printSlow("Пожалуйста, выберите 1, 2 или 3.", 2, 30);
         std::cin.clear();
         std::cin.ignore(1000, '\n');
-        menu(); // возвращаемся в меню
+
+        return MenuResult::Again; // возвращаемся в меню
     } 
 }
 
@@ -96,7 +117,23 @@ int main() {
 
     printSlow("Добро пожаловать в игру!", 2, 30);
 
-    menu(); // вызов функции меню
+    // вызов функции меню и вызов самой игры 
+    
+    while (true) {
+        switch(menu()) {
 
-    return 0;
+            case MenuResult::Play:
+                //PlayGame
+                continue; // после игры отправляет в меню снова чтобы начать новую или выйти из игры
+            
+            case MenuResult::Exit:
+                return 0; // завершение программы полностью 
+            
+            case MenuResult::Again:
+                continue; // повторение при вызове меню снова, например при ошибке 
+            
+            default:
+                return 0; 
+        }
+    }
 }
