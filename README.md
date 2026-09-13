@@ -82,7 +82,12 @@
 ```text
 Bulls_and_cows/
 │
-├── technical-code.cpp
+├── function.cpp
+├── game.cpp
+├── game.h
+├── main.cpp
+├── menu.cpp
+├── game.exe
 └── README.md
 ```
 
