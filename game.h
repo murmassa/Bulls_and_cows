@@ -2,12 +2,20 @@
 
 #include <string>
 #include <tuple>
+#include <vector>            
 
 // ===== Утилиты (function.cpp) =====
 void print_slow(std::string text, int enter, int delay);
 std::string generate_number();
 bool check_number(std::string number);
 std::tuple<int, int> check_bulls_and_cows(std::string secret, std::string player);
+std::vector<std::string> generate_all_combinations();
+std::vector<std::string> filter_combinations(
+    std::vector<std::string> combinations,
+    std::string computer_input_number,
+    int bulls,
+    int cows
+);
 
 // ===== Общий enum =====
 enum class MenuResult {

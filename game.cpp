@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <tuple>
+#include <vector>
 
 #include "game.h"
 
@@ -115,5 +116,54 @@ void start_game_1() {
 
 void start_game_2(){
     // Здесь логика игры_2
-    
+    std::vector<std::string> combinations {generate_all_combinations()};
+    std::string computer_input_number = combinations[rand() % combinations.size()];
+    std::string user_output_number;
+    print_slow("Загадай 4-значное число с уникальными цифрами: ", 1, 5);
+    bool flag {true};
+    while (flag) {
+
+        print_slow("Загадал число?(да/нет)     ",0,5);
+        std::string answer;
+        std::cin >> answer;
+
+        if (answer == "да"){
+            flag = false;
+        }
+
+        else{
+            print_slow("Жду..........", 1, 30);   
+        }   
+    }
+     while (true){
+        print_slow("Твое число: ", 0, 5);
+        std::cout << computer_input_number << std::endl;
+        int bulls;
+        int cows;
+        print_slow("Быков: ", 0, 5);
+        std::cin >> bulls;
+        print_slow("Коров: ", 0, 5);
+        std::cin >> cows;
+
+        if (bulls == 4){
+            print_slow("Твое число: ", 0, 5);
+            std::cout << computer_input_number << std::endl;
+            print_slow("Спасибо за игру!",2,10);
+            break;
+        }
+
+        else{
+            combinations = filter_combinations(combinations, computer_input_number, bulls,cows);
+            if (combinations.empty()){
+                print_slow("Ты где то ошибся!!!",2,10);
+                print_slow("Начни игру заново...",2,10);
+                break;
+            }
+
+            else{
+                computer_input_number = combinations[rand() % combinations.size()];    
+            }
+        }
+     }
+
 }

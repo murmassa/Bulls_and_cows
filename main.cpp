@@ -24,24 +24,27 @@ int main() {
     while (true) {
         switch(menu()) {
 
-            case MenuResult::Play:
-                while (true) {
+            case MenuResult::Play: {
+                bool go_main_menu = false;
+                while (!go_main_menu) {
                     switch (menu2()) {
 
                         case MenuResult::Game1: 
                             start_game_1();
                             break; 
                         case MenuResult::Game2:
-                            //start_game_2();
+                            start_game_2();
                             break;
 
-                        case MenuResult::Again: continue;
+                        case MenuResult::Again: 
+                            continue;
                         case MenuResult::Exit: break;
                         default: break; 
                     }
+                    go_main_menu = true; 
                 }
                 continue;
-
+            }
                 // после игры отправляет в меню снова чтобы начать новую или выйти из игры
             case MenuResult::Exit: return 0; // завершение программы полностью 
             case MenuResult::Again: continue; // повторение при вызове меню снова, например при ошибке 
